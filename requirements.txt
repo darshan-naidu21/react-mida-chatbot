@@ -1,0 +1,6 @@
+fastapi 
+uvicorn
+axios
+agno
+pgvector
+duckduckgo-search
