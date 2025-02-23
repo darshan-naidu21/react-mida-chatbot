@@ -11,9 +11,3 @@
   --color-ghost-white: #f8f8ff;
   --color-light-purple-2: #eff1fc;
 }
-
-/* @layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-      display: none;
-  }
-} */

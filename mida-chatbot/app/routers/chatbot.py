@@ -12,3 +12,7 @@ async def get_response(request: ChatRequest):
         return ChatResponse(bot_reply=response)
     except Exception as e:
         return ChatResponse(bot_reply="Response failed")
+    
+@router.get("/healthcheck")
+async def healthcheck():
+    return {"status": "ok"}

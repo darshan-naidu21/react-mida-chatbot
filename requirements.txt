@@ -1,6 +1,7 @@
 fastapi 
 uvicorn
-axios
 agno
 pgvector
 duckduckgo-search
+openai
+python-dotenv

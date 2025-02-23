@@ -3,55 +3,62 @@ import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-export default function MessageBubble({ text, sender, isThinking }) { // Added isThinking prop
+export default function MessageBubble({ text, sender, isThinking, setIsTyping }) { // Added isThinking prop
   const [typedText, setTypedText] = useState("");
 
   useEffect(() => {
     if (sender === "bot") {
       setTypedText(""); // ✅ Reset text properly before typing starts
+      setIsTyping(true);
 
+      const words = text.split(" ");
       let index = 0;
       const interval = setInterval(() => {
         setTypedText((prev) => {
-          if (index < text.length) {
-            return text.slice(0, index + 1); // ✅ Correct way to update text
+          if (index < words.length) {
+            return words.slice(0, index + 1).join(" "); // ✅ Correct way to update text by words
           } else {
             clearInterval(interval);
+            setIsTyping(false);
             return prev;
           }
         });
         index++;
-      }, 5); // Typing speed
+      }, 30); // Typing speed for words
 
-      return () => clearInterval(interval);
+      return () => {
+        clearInterval(interval);
+        setIsTyping(false); // Ensure cleanup
+      };
     }
-  }, [text, sender]);
+  }, [text, sender, setIsTyping]);
+
+
+  const isUser = sender === "user";
+  const isBot = sender === "bot";
 
   return (
-    <div className={`flex ${sender === "user" ? "justify-end" : "justify-start"} items-start space-x-4`}>
-      {sender !== "user" && (
-        <img src={midaLogo} alt="MIDA Logo" className="w-8 h-8 self-start" />
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"} items-start space-x-4 mb-8`}>
+      {!isUser && (
+        <img src={midaLogo} alt="MIDA Logo" className="w-10 h-10 self-start" />
       )}
+
       <div
         className={`rounded-lg break-words ${
-          sender === "user"
-            ? "bg-light-purple-2 p-3 font-poppins text-oil-black self-end max-w-[75%] md:max-w-[50%]"
-            : "text-oil-black self-start font-poppins max-w-md md:max-w-lg lg:max-w-xl"
+          isUser
+            ? "bg-light-purple-2 p-3 font-poppins text-oil-black self-end max-w-[90%] md:max-w-[70%] text-base md:text-lg"
+            : "text-oil-black self-start font-poppins w-full text-base md:text-lg"
         }`}
       >
-        {isThinking && sender === "bot" ? ( // Conditional rendering for thinking text
-          // <p className="text-gray-500">Thinking...</p>
+        {isThinking && isBot ? (
           <div className="flex items-center space-x-2">
-            {/* Animated pulsing dot */}
-            <span className="relative flex h-3 w-3">
+            <span className="relative flex h-5 w-5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-grey opacity-75"></span>
-              <span className="relative inline-flex h-3 w-3 rounded-full bg-oil-black"></span>
+              <span className="relative inline-flex h-5 w-5 rounded-full bg-oil-black"></span>
             </span>
-
-            {/* Optional: You can keep the text for clarity */}
-            <span className="text-grey text-sm">Thinking...</span>
+            <span className="text-grey text-md font-poppins">Thinking...</span>
           </div>
-        ) : sender === "bot" ? (
+        ) : isBot ? (
           <ReactMarkdown
             components={{
               p: ({ node, ...props }) => <p className="mb-2 text-gray-900" {...props} />,
