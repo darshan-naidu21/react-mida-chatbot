@@ -12,7 +12,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Set up PostgreSQL connection
-db_url = os.getenv("DB_URL")
+db_url = "postgresql://postgres.ptzrzcyzmkharnhlwtfk:darsh212902@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
 
 knowledge_base = AgentKnowledge(
     vector_db=PgVector(
